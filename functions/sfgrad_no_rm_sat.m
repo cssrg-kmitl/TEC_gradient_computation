@@ -1,4 +1,4 @@
-function [output_PRM,satava_s,doy,Year,month,date,name] = sfgrad_no_rm_sat(Basefile,Roverfile,navfile,input_PRM)
+function [output_PRM,satava_s,doy,Year,month,date,name] = sfgrad_no_rm_sat(BaseObsfile,Roverfile,Navfile,input_PRM)
 %============ Constant ================================
 f1 = 1575.42*10^6;          %   f1 = 1575.42 MHz (L1)
 f2 = 1227.60*10^6;          %   f2 = 1227.60 MHz (L2)
@@ -9,11 +9,12 @@ elev_mask = input_PRM.elevation;
 wait_reset_filter = 15;
 time_index = (0:86399)./86400*24;
 
+
 %==============================================================================
 if(input_PRM.mode == 1) %single-frequency approach
     disp('Readrinex');
     % Read RINEX
-    [obs,nav,~,Year] = readrinex211(Basefile,navfile);
+    [obs,nav,~,Year] = readrinex211(BaseObsfile,Navfile);
     name.basename = obs.station;
     YYYY  = num2str(obs.date(1));
     [time_c1,time_p2,time_l1,time_l2,truerange_sat_a,elevation_sat,azi_sat]=obstorange(obs,nav,elev_mask,input_PRM.base_pos);
@@ -280,8 +281,8 @@ if(input_PRM.mode == 1) %single-frequency approach
 end
 if(input_PRM.mode == 2) %dual-frequency approach
     %Base station TEC
-    r_o_name = Basefile; % observation file's name SISK0010.16
-    r_n_name = navfile; % navigation file's name (if blank, program will downloaded from IGS)
+    r_o_name = BaseObsfile; % observation file's name SISK0010.16
+    r_n_name = Navfile; % navigation file's name (if blank, program will downloaded from IGS)
     % r_n_name = ''; % navigation file's name
     
     % Setting#1
@@ -302,6 +303,7 @@ if(input_PRM.mode == 2) %dual-frequency approach
     
     cd(input_PRM.p_path)
     %% 2. Calculate Total Electron Content(TEC)
+    cd functions %%new
     [~,output_PRM,~] = TECcalculation(obs,nav,satb,input_PRM.S_path);
     %Rover station TEC
     baseTEC = output_PRM.TEC_slant;
@@ -314,6 +316,7 @@ if(input_PRM.mode == 2) %dual-frequency approach
     date  = num2str(obs.date(3),'%.2d');
     [satb.P1C1,satb.P1P2] = dlsat(obs,input_PRM.DCB_path);
     cd(input_PRM.p_path)
+    cd functions %%new
     [~,output_PRM,~] = TECcalculation(obs,nav,satb,input_PRM.S_path);
     roverTEC = output_PRM.TEC_slant;
     baseline = sqrt(nansum((input_PRM.base_pos-input_PRM.rover_pos).^2));

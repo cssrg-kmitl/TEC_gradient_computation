@@ -46,10 +46,15 @@ if     length(P1C1_filename) == 8 &&  length(P1P2_filename) == 8
         
 elseif (exist(P1C1_filename, 'file') && exist(P1P2_filename, 'file'))
        %====== Read Satellites DCB
+%        cd .. 
+%        cd functions\
         P1C1Row_fileDCB = ReadRowDCB(P1C1_filename);
         P1P2Row_fileDCB = ReadRowDCB(P1P2_filename);
+
         P1C1_DCB = ReadDCB(P1C1_filename,P1C1Row_fileDCB-2);
         P1P2_DCB = ReadDCB(P1P2_filename,P1C1Row_fileDCB-2);
+       cd ..   %new
+       cd functions  %new
 else
         P1C1_download_cmd = ['nohup curl.exe -v -O --retry 50 --retry-max-time 0 ftp://ftp.aiub.unibe.ch/CODE/' year '/' P1C1_filename '.Z'];
         P1P2_download_cmd = ['nohup curl.exe -v -O --retry 50 --retry-max-time 0 ftp://ftp.aiub.unibe.ch/CODE/' year '/' P1P2_filename '.Z'];

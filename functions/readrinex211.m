@@ -26,7 +26,7 @@ current_path = [pwd '\'];
     
 % Calculate Date Of Year (DOY)
 disp('The data date:');
-disp(datetime(obs.date(1:3)));
+%disp(datetime(obs.date(1:3)));
 D1  = obs.date(1:3); % obs.date
 D2  = D1; D2(:,2:3) = 0;
 ydoy = cat(2, D1(:,1), datenum(D1) - datenum(D2));
